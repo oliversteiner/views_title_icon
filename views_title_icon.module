@@ -33,7 +33,12 @@ function views_title_icon_theme()
     return [
         'views_title_icon' => [
             'render element' => 'children',
-        ],
+            'variables' => [
+                'title' => [],
+                'title_icon' => [],
+            ]
+        ]
+
     ];
 }
 
@@ -47,7 +52,7 @@ function views_title_icon_theme()
  */
 function views_title_icon_views_pre_render(\Drupal\views\ViewExecutable $view)
 {
-    // Get the current display.
+/*    // Get the current display.
     $display = $view->getDisplay();
     // And get the list of extenders for this display.
     $extenders = $display->getExtenders();
@@ -66,7 +71,7 @@ function views_title_icon_views_pre_render(\Drupal\views\ViewExecutable $view)
 
         $view->element['title_icon'] = $icon_name;
         //  $variables['title_icon'] = $icon_name;
-    }
+    }*/
 
 
 }
@@ -74,7 +79,7 @@ function views_title_icon_views_pre_render(\Drupal\views\ViewExecutable $view)
 
 function views_title_icon_preprocess_views_view(&$variables)
 {
-    if (isset($variables['view']) && $variables['view']->display_handler) {
+/*    if (isset($variables['view']) && $variables['view']->display_handler) {
 
         $display_handler = $variables['view']->display_handler;
         $extenders = $display_handler->getExtenders();
@@ -85,7 +90,7 @@ function views_title_icon_preprocess_views_view(&$variables)
 
         }
 
-    }
+    }*/
 
 }
 
@@ -94,7 +99,7 @@ function views_title_icon_preprocess_views_view(&$variables)
  */
 function views_title_icon_preprocess_page_title(&$variables)
 {
-    // Since the title and the shortcut link are both block level elements,
+/*    // Since the title and the shortcut link are both block level elements,
     // positioning them next to each other is much simpler with a wrapper div.
     if (!empty($variables['title_suffix']['add_or_remove_shortcut']) && $variables['title']) {
         // Add a wrapper div using the title_prefix and title_suffix render
@@ -115,7 +120,7 @@ function views_title_icon_preprocess_page_title(&$variables)
     //   $variables['title_icon'] = 'fas fa-home';
     $variables['title_icon'] = '';
 
-  //  $variables['title_icon'] = 'fas fa-smile';
+    //  $variables['title_icon'] = 'fas fa-smile';
 
     if (isset($variables['view']) && $variables['view']->display_handler) {
 
@@ -128,13 +133,13 @@ function views_title_icon_preprocess_page_title(&$variables)
 
         }
 
-    }
+    }*/
 
 }
 
 function views_title_icon_preprocess_views_title(&$variables)
 {
-
+/*
     if (isset($variables['view']) && $variables['view']->display_handler) {
         // dpmm('preprocess_views_title ');
 
@@ -147,7 +152,7 @@ function views_title_icon_preprocess_views_title(&$variables)
 
         }
 
-    }
+    }*/
 }
 
 /**
@@ -156,18 +161,18 @@ function views_title_icon_preprocess_views_title(&$variables)
 function views_title_icon_theme_registry_alter(&$theme_registry)
 {
 
-    $template_path = drupal_get_path('module', 'views_title_icon') . '/templates';
+    /*    $template_path = drupal_get_path('module', 'views_title_icon') . '/templates';
 
-    if (isset($theme_registry['page_title'])) {
-        $hooks = $theme_registry['page_title']['preprocess functions'];
-        if (($pos = array_search('views_title_icon_preprocess_page_title', $hooks)) !== FALSE) {
-            unset($hooks[$pos]);
-        }
-        $hooks[] = 'views_title_icon_preprocess_page_title';
+        if (isset($theme_registry['page_title'])) {
+            $hooks = $theme_registry['page_title']['preprocess functions'];
+            if (($pos = array_search('views_title_icon_preprocess_page_title', $hooks)) !== FALSE) {
+                unset($hooks[$pos]);
+            }
+            $hooks[] = 'views_title_icon_preprocess_page_title';
 
-        $theme_registry['page_title']['preprocess functions'] = array_values($hooks);
-        $theme_registry['page_title']['path'] = $template_path;
-    }
+            $theme_registry['page_title']['preprocess functions'] = array_values($hooks);
+            $theme_registry['page_title']['path'] = $template_path;
+        }*/
 }
 
 /**
@@ -176,12 +181,12 @@ function views_title_icon_theme_registry_alter(&$theme_registry)
 function views_title_icon_preprocess_page(array &$variables)
 {
     $variables['view_title'] = '';
-    $variables['title_icon'] = '';
+    $variables['title_icon'] = 'test icon';
 
-    // dpmm('preprocess_page');
- //   // dpmm($variables);
+     dpm('preprocess_page');
     $variables['title_icon'] = 'fas fa-square';
 
+    $variables['icon_title_block']['content']['#title_icon'] = 'fas fa-square';
 
     if (isset($variables['view']) && $variables['view']->display_handler) {
         // dpmm('preprocess_views_title ');
@@ -219,4 +224,37 @@ function views_title_icon_preprocess_page(array &$variables)
             }
         }
     }
+    $variables['icon_title_block']['#title_icon'] = 'views_title_icon_preprocess_page';
+
+}
+
+function views_title_icon_preprocess_block(&$variables)
+{
+    if ('icon_title_block' == $variables['plugin_id']) {
+
+      //  $variables['content']['#title'] = 'TEST';
+      //  $variables['content']['#title_icon'] = 'TEST2';
+
+    }
+
+    dpm($variables);
+
+    if (isset($variables['view']) && $variables['view']->display_handler) {
+
+        $variables['content']['#title'] = $variables['view']->getTitle();
+
+        $display_handler = $variables['view']->display_handler;
+        $extenders = $display_handler->getExtenders();
+        if ($extenders["title_icon"]) {
+            $icon_name = $extenders["title_icon"]->options["title_icon"]["icon_name"];
+
+
+            $variables['content']['#title_icon'] = $icon_name;
+
+
+        }
+
+    }
+    $variables['icon_title_block']['#title_icon'] = 'views_title_icon_preprocess_block';
+
 }
