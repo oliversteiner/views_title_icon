@@ -80,7 +80,7 @@ function views_title_icon_preprocess_views_view(&$variables)
         $extenders = $display_handler->getExtenders();
         if ($extenders["title_icon"]) {
             $icon_name = $extenders["title_icon"]->options["title_icon"]["icon_name"];
-            dpm($icon_name);
+            // dpmm($icon_name);
             $variables['title_icon'] = $icon_name;
 
         }
@@ -123,7 +123,7 @@ function views_title_icon_preprocess_page_title(&$variables)
         $extenders = $display_handler->getExtenders();
         if ($extenders["title_icon"]) {
             $icon_name = $extenders["title_icon"]->options["title_icon"]["icon_name"];
-            dpm('preprocess_page_title: '.$icon_name);
+            // dpmm('preprocess_page_title: '.$icon_name);
             $variables['title_icon'] = $icon_name;
 
         }
@@ -136,13 +136,13 @@ function views_title_icon_preprocess_views_title(&$variables)
 {
 
     if (isset($variables['view']) && $variables['view']->display_handler) {
-        dpm('preprocess_views_title ');
+        // dpmm('preprocess_views_title ');
 
         $display_handler = $variables['view']->display_handler;
         $extenders = $display_handler->getExtenders();
         if ($extenders["title_icon"]) {
             $icon_name = $extenders["title_icon"]->options["title_icon"]["icon_name"];
-            dpm($icon_name);
+            // dpmm($icon_name);
             $variables['title_icon'] = $icon_name;
 
         }
@@ -178,19 +178,19 @@ function views_title_icon_preprocess_page(array &$variables)
     $variables['view_title'] = '';
     $variables['title_icon'] = '';
 
-    dpm('preprocess_page');
- //   dpm($variables);
+    // dpmm('preprocess_page');
+ //   // dpmm($variables);
     $variables['title_icon'] = 'fas fa-square';
 
 
     if (isset($variables['view']) && $variables['view']->display_handler) {
-        dpm('preprocess_views_title ');
+        // dpmm('preprocess_views_title ');
 
         $display_handler = $variables['view']->display_handler;
         $extenders = $display_handler->getExtenders();
         if ($extenders["title_icon"]) {
             $icon_name = $extenders["title_icon"]->options["title_icon"]["icon_name"];
-            dpm($icon_name);
+            // dpmm($icon_name);
             $variables['title_icon'] = $icon_name;
 
         }
