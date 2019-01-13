@@ -1,0 +1,222 @@
+<?php
+
+/**
+ * @file
+ * Contains views_title_icon.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\views\Views;
+
+/**
+ * Implements hook_help().
+ */
+function views_title_icon_help($route_name, RouteMatchInterface $route_match)
+{
+    switch ($route_name) {
+        // Main module help for the views_title_icon module.
+        case 'help.page.views_title_icon':
+            $output = '';
+            $output .= '<h3>' . t('About') . '</h3>';
+            $output .= '<p>' . t('Add Icons to Views Titles') . '</p>';
+            return $output;
+
+        default:
+    }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function views_title_icon_theme()
+{
+    return [
+        'views_title_icon' => [
+            'render element' => 'children',
+        ],
+    ];
+}
+
+
+/**
+ * @file
+ * Contains views_title_icon.module.
+ */
+/**
+ * Implements hook_views_pre_render().
+ */
+function views_title_icon_views_pre_render(\Drupal\views\ViewExecutable $view)
+{
+    // Get the current display.
+    $display = $view->getDisplay();
+    // And get the list of extenders for this display.
+    $extenders = $display->getExtenders();
+
+    if (!isset($extenders['title_icon'])) {
+        // If the id of our plugin is not in the list something is wrong.
+        return;
+    }
+    // Retrieve the settings of our plugins using our custom plugin method.
+    //   $title_icon_values = $extenders['title_icon']->getIconValues();
+    $title_icon_values = $extenders['title_icon']->options['title_icon'];
+    // Add the metadata tag for the title value.
+    if (!empty($title_icon_values['icon_name'])) {
+
+        $icon_name = $title_icon_values['icon_name'];
+
+        $view->element['title_icon'] = $icon_name;
+        //  $variables['title_icon'] = $icon_name;
+    }
+
+
+}
+
+
+function views_title_icon_preprocess_views_view(&$variables)
+{
+    if (isset($variables['view']) && $variables['view']->display_handler) {
+
+        $display_handler = $variables['view']->display_handler;
+        $extenders = $display_handler->getExtenders();
+        if ($extenders["title_icon"]) {
+            $icon_name = $extenders["title_icon"]->options["title_icon"]["icon_name"];
+            dpm($icon_name);
+            $variables['title_icon'] = $icon_name;
+
+        }
+
+    }
+
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page title templates.
+ */
+function views_title_icon_preprocess_page_title(&$variables)
+{
+    // Since the title and the shortcut link are both block level elements,
+    // positioning them next to each other is much simpler with a wrapper div.
+    if (!empty($variables['title_suffix']['add_or_remove_shortcut']) && $variables['title']) {
+        // Add a wrapper div using the title_prefix and title_suffix render
+        // elements.
+        $variables['title_prefix']['shortcut_wrapper'] = [
+            '#markup' => '<div class="shortcut-wrapper clearfix">',
+            '#weight' => 100,
+        ];
+        $variables['title_suffix']['shortcut_wrapper'] = [
+            '#markup' => '</div>',
+            '#weight' => -99,
+        ];
+        // Make sure the shortcut link is the first item in title_suffix.
+        $variables['title_suffix']['add_or_remove_shortcut']['#weight'] = -100;
+
+
+    }
+    //   $variables['title_icon'] = 'fas fa-home';
+    $variables['title_icon'] = '';
+
+  //  $variables['title_icon'] = 'fas fa-smile';
+
+    if (isset($variables['view']) && $variables['view']->display_handler) {
+
+        $display_handler = $variables['view']->display_handler;
+        $extenders = $display_handler->getExtenders();
+        if ($extenders["title_icon"]) {
+            $icon_name = $extenders["title_icon"]->options["title_icon"]["icon_name"];
+            dpm('preprocess_page_title: '.$icon_name);
+            $variables['title_icon'] = $icon_name;
+
+        }
+
+    }
+
+}
+
+function views_title_icon_preprocess_views_title(&$variables)
+{
+
+    if (isset($variables['view']) && $variables['view']->display_handler) {
+        dpm('preprocess_views_title ');
+
+        $display_handler = $variables['view']->display_handler;
+        $extenders = $display_handler->getExtenders();
+        if ($extenders["title_icon"]) {
+            $icon_name = $extenders["title_icon"]->options["title_icon"]["icon_name"];
+            dpm($icon_name);
+            $variables['title_icon'] = $icon_name;
+
+        }
+
+    }
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ */
+function views_title_icon_theme_registry_alter(&$theme_registry)
+{
+
+    $template_path = drupal_get_path('module', 'views_title_icon') . '/templates';
+
+    if (isset($theme_registry['page_title'])) {
+        $hooks = $theme_registry['page_title']['preprocess functions'];
+        if (($pos = array_search('views_title_icon_preprocess_page_title', $hooks)) !== FALSE) {
+            unset($hooks[$pos]);
+        }
+        $hooks[] = 'views_title_icon_preprocess_page_title';
+
+        $theme_registry['page_title']['preprocess functions'] = array_values($hooks);
+        $theme_registry['page_title']['path'] = $template_path;
+    }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page.html.twig.
+ */
+function views_title_icon_preprocess_page(array &$variables)
+{
+    $variables['view_title'] = '';
+    $variables['title_icon'] = '';
+
+    dpm('preprocess_page');
+ //   dpm($variables);
+    $variables['title_icon'] = 'fas fa-square';
+
+
+    if (isset($variables['view']) && $variables['view']->display_handler) {
+        dpm('preprocess_views_title ');
+
+        $display_handler = $variables['view']->display_handler;
+        $extenders = $display_handler->getExtenders();
+        if ($extenders["title_icon"]) {
+            $icon_name = $extenders["title_icon"]->options["title_icon"]["icon_name"];
+            dpm($icon_name);
+            $variables['title_icon'] = $icon_name;
+
+        }
+
+    }
+
+    // Get current route object.
+    $route = \Drupal::routeMatch()->getRouteObject();
+    if ($route) {
+        // Get view id and display id from route.
+        $view_id = $route->getDefault('view_id');
+        $display_id = $route->getDefault('display_id');
+        // If you just want the page title, you could get it directly from the
+        // route object. Unfortunately, it will be untranslated, so if we want
+        // to get the translated title, we still need to load the view object.
+        // $route->getDefault('_title');
+        if (!empty($view_id) && !empty($display_id)) {
+            // Get the view by id.
+            $view = Views::getView($view_id);
+            if ($view) {
+                // Set display id.
+                $view->setDisplay($display_id);
+                // Get translated title.
+                $variables['view_title'] = $view->getTitle();
+                $variables['title_icon'] = 'fas fa-circle';
+            }
+        }
+    }
+}

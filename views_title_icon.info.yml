@@ -1,0 +1,5 @@
+name: 'Views Title Icon'
+type: module
+description: 'Add Icons to Views Titles'
+core: 8.x
+package: 'Views'
