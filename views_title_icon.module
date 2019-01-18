@@ -183,7 +183,6 @@ function views_title_icon_preprocess_page(array &$variables)
     $variables['view_title'] = '';
     $variables['title_icon'] = 'test icon';
 
-     dpm('preprocess_page');
     $variables['title_icon'] = 'fas fa-square';
 
     $variables['icon_title_block']['content']['#title_icon'] = 'fas fa-square';
@@ -237,7 +236,6 @@ function views_title_icon_preprocess_block(&$variables)
 
     }
 
-    dpm($variables);
 
     if (isset($variables['view']) && $variables['view']->display_handler) {
 
