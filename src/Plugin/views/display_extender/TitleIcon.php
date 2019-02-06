@@ -130,8 +130,9 @@ class TitleIcon extends DisplayExtenderPluginBase
      */
     public function getIconValues()
     {
-        $title_icon = $this->options['title_icon'];
-        return $title_icon;
+      if($this->options && $this->options['title_icon']){
+        return $this->options['title_icon'];
+      }
     }
 }
 
