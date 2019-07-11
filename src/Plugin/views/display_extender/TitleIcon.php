@@ -135,5 +135,3 @@ class TitleIcon extends DisplayExtenderPluginBase
       }
     }
 }
-
-?>
