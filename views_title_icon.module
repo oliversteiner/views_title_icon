@@ -31,16 +31,21 @@ function views_title_icon_help($route_name, RouteMatchInterface $route_match)
 function views_title_icon_theme()
 {
     return [
-        'views_title_icon' => [
+/*        'views_title_icon' => [
             'render element' => 'children',
             'variables' => [
                 'title' => [],
                 'title_icon' => [],
             ]
-        ]
+        ],*/
+      'page_title' => [
+        'template' => 'pagetitleicon',
+        'base hook' => 'content'
+      ],
 
     ];
 }
+
 
 
 /**
