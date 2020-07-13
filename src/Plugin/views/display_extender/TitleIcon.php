@@ -22,7 +22,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   no_ui = FALSE
  * )
  */
-class TitleIcon2 extends DisplayExtenderPluginBase
+class TitleIcon extends DisplayExtenderPluginBase
 {
   /**
    * Provide the key options for this plugin.
